@@ -58,8 +58,9 @@
     group: sillypoise
     mode: 0600
 
+## TODO: Fix error handling here
 - name: users | sillypoise | verify op CLI authentication
-  ansible.builtin.command: op whoami
+  ansible.builtin.command: op user get --me
   register: op_whoami
   no_log: true
   tags:
@@ -110,7 +111,7 @@
         - op
 
 - name: users | sillypoise | op inject ansible vault passwd
-  ansible.builtin.shell: op inject -i /home/sillypoise/.vault_key_passwd.tpl -o /home/sillypoise/.vault_key_passwd -y
+  ansible.builtin.command: op inject -i /home/sillypoise/.vault_key_passwd.tpl -o /home/sillypoise/.vault_key_passwd
   register: inject_result
   no_log: true
   tags:
