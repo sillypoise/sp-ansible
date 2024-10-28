@@ -1,16 +1,36 @@
 - name: users | sillypoise | create group
-  tags: bootstrap,groups,sillypoise,users
+  tags:
+    - bootstrap
+    - groups
+    - sillypoise
+    - users
   group:
     name: sillypoise
     state: present
 
-- name: users | sillypoise | create user
-  tags: bootstrap,sillypoise,sudo,users
+- name: users | sillypoise | install zsh
+  tags:
+    - bootstrap
+    - packages
+  dnf:
+    name: zsh
+    state: present
+  when: ansible_distribution == "Fedora"
+
+- name: users | sillypoise | create user without password
+  tags:
+    - bootstrap
+    - sillypoise
+    - sudo
+    - users
   user:
     name: sillypoise
     group: sillypoise
-    groups: ansible,{{ sudo_group }}
+    groups:
+      - ansible
+      - "{{ sudo_group }}"
     state: present
     comment: "sillypoise"
     shell: /bin/zsh
     password: '!'  # No password set
+  when: ansible_distribution == "Fedora"
