@@ -9,3 +9,10 @@
         state: latest
       changed_when: False
       when: ansible_distribution == "Fedora"
+
+# run roles
+- hosts: all
+  tags: base
+  become: true
+  roles:
+    - base

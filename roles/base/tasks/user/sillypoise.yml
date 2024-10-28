@@ -1,0 +1,16 @@
+- name: users | sillypoise | create group
+  tags: bootstrap,groups,sillypoise,users
+  group:
+    name: sillypoise
+    state: present
+
+- name: users | sillypoise | create user
+  tags: bootstrap,sillypoise,sudo,users
+  user:
+    name: sillypoise
+    group: sillypoise
+    groups: ansible,{{ sudo_group }}
+    state: present
+    comment: "sillypoise"
+    shell: /bin/zsh
+    password: '!'  # No password set
