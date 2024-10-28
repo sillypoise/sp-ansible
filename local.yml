@@ -5,6 +5,8 @@
   pre_tasks:
     - name: pre-run | update package cache (fedora)
       tags: always
-      ansible.builtin: update_cache=yes
       changed_when: False
+      ansible.builtin: 
+        update_cache: true
+        state: latest
       when: ansible_distribution == "Fedora"
