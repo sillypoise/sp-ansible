@@ -1,3 +1,25 @@
+- name: users | flubber | create group
+  tags:
+    - bootstrap
+    - groups
+    - flubber
+    - users
+  group:
+    name: flubber
+    state: present
+
+- name: users | flubber | create user
+  tags:
+    - bootstrap
+    - flubber
+    - users
+  user:
+    name: flubber
+    group: flubber
+    state: present
+    comment: "Automation user for Ansible"
+    shell: /bin/bash
+
 - name: users | flubber | add public key
   tags:
     - dotfiles
