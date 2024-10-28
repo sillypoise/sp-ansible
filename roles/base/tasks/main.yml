@@ -5,4 +5,5 @@
 
   # install software
 - import_tasks: software/one_password.yml
+- import_tasks: software/python.yml
 
