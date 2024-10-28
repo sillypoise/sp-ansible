@@ -170,3 +170,16 @@
     mode: '0440'
   when: ansible_distribution == "Fedora"
 
+- name: users | sillypoise | add public key
+  tags:
+    - dotfiles
+    - sillypoise
+    - ssh
+    - ssh-keys
+    - users
+  authorized_key:
+    user: sillypoise
+    key: "{{ item }}"
+  with_file:
+    - users/sillypoise/ssh/sp_work_ed25519.pub
+
