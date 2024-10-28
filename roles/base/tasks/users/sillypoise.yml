@@ -1,0 +1,138 @@
+- name: users | sillypoise | create group
+  tags:
+    - bootstrap
+    - groups
+    - sillypoise
+    - users
+  group:
+    name: sillypoise
+    state: present
+
+- name: users | ansible | create group
+  tags:
+    - bootstrap
+    - groups
+    - ansible
+    - users
+  group:
+    name: ansible
+    state: present
+  when: ansible_distribution == "Fedora"
+
+- name: users | sillypoise | install zsh
+  tags:
+    - bootstrap
+    - packages
+  dnf:
+    name: zsh
+    state: present
+  when: ansible_distribution == "Fedora"
+
+- name: users | sillypoise | create user without password
+  tags:
+    - bootstrap
+    - sillypoise
+    - sudo
+    - users
+  user:
+    name: sillypoise
+    group: sillypoise
+    groups:
+      - ansible
+      - "{{ sudo_group }}"
+    state: present
+    comment: "sillypoise"
+    shell: /bin/zsh
+    password: '!'  # No password set
+  when: ansible_distribution == "Fedora"
+
+- name: users | sillypoise | import ansible password op tpl file
+  tags:
+    - secrets
+    - op
+    - template
+  copy:
+    src: users/vault_key_passwd
+    dest: /home/sillypoise/.vault_key_passwd.tpl
+    owner: sillypoise
+    group: sillypoise
+    mode: 0600
+
+- name: users | sillypoise | verify op CLI authentication
+  ansible.builtin.command: op whoami
+  register: op_whoami
+  no_log: true
+  tags:
+    - secrets
+    - op
+
+- name: users | sillypoise | fail if op CLI is not authenticated
+  ansible.builtin.fail:
+    msg: "op CLI is not authenticated. Please ensure OP_SESSION_my is set correctly."
+  when:
+    - ansible_distribution == "Fedora"
+    - op_whoami.rc != 0
+  tags:
+    - secrets
+    - op
+
+- name: users | sillypoise | op inject ansible vault passwd
+  ansible.builtin.command: op inject -i /home/sillypoise/.vault_key_passwd.tpl -o /home/sillypoise/.vault_key_passwd
+  register: inject_result
+  no_log: true
+  tags:
+    - secrets
+    - op
+
+- name: users | sillypoise | set permissions on injected vault_key_passwd
+  ansible.builtin.file:
+    path: /home/sillypoise/.vault_key_passwd
+    owner: sillypoise
+    group: sillypoise
+    mode: 0600
+  when:
+    - inject_result.rc == 0
+    - ansible_distribution == "Fedora"
+  tags:
+    - secrets
+    - op
+
+- name: users | sillypoise | remove template file after injection
+  ansible.builtin.file:
+    path: /home/sillypoise/.vault_key_passwd.tpl
+    state: absent
+  tags:
+    - secrets
+    - op
+    - cleanup
+  when:
+    - inject_result.rc == 0
+    - ansible_distribution == "Fedora"
+
+- name: users | sillypoise | create .ssh directory
+  tags:
+    - ssh
+    - users
+    - dotfiles
+    - configure
+  ansible.builtin.file:
+    path: /home/sillypoise/.ssh
+    state: directory
+    owner: sillypoise
+    group: sillypoise
+    mode: '0700'
+  when: ansible_distribution == "Fedora"
+
+- name: users | sillypoise | add sudoers file
+  tags:
+    - sudo
+    - users
+    - configure
+  ansible.builtin.copy:
+    src: users/sudoers_sillypoise
+    dest: /etc/sudoers.d/sillypoise
+    owner: root
+    group: root
+    mode: '0440'
+  when: ansible_distribution == "Fedora"
+
