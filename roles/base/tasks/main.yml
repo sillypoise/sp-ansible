@@ -1,6 +1,6 @@
 # Make sure users exist on the system
 - import_tasks: users/sillypoise.yml
-  # - import_tasks: users/root.yml
+- import_tasks: users/root.yml
   # - import_tasks: users/flubber.yml
 
   # install software
