@@ -110,7 +110,7 @@
         - op
 
 - name: users | sillypoise | op inject ansible vault passwd
-  ansible.builtin.command: op inject -i /home/sillypoise/.vault_key_passwd.tpl -o /home/sillypoise/.vault_key_passwd
+  ansible.builtin.shell: op inject -i /home/sillypoise/.vault_key_passwd.tpl -o /home/sillypoise/.vault_key_passwd -y
   register: inject_result
   no_log: true
   tags:

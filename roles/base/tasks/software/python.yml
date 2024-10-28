@@ -1,0 +1,57 @@
+- name: software | python | ensure Python3 is installed and up-to-date
+  ansible.builtin.dnf:
+    name: python3
+    state: latest
+  tags:
+    - python
+    - bootstrap
+    - packages
+  when: ansible_distribution == "Fedora"
+
+- name: software | python | install development tools for pip
+  ansible.builtin.dnf:
+    name:
+      - gcc
+      - make
+      - openssl-devel
+      - bzip2-devel
+      - libffi-devel
+    state: present
+  tags:
+    - python
+    - bootstrap
+    - packages
+  when: ansible_distribution == "Fedora"
+
+- name: software | python | install Python3 pip
+  ansible.builtin.dnf:
+    name: python3-pip
+    state: present
+  tags:
+    - bootstrap
+    - python
+    - packages
+  when: ansible_distribution == "Fedora"
+
+- name: software | python | upgrade pip3
+  ansible.builtin.pip:
+    name: pip
+    state: latest
+    executable: pip3
+  tags:
+    - python
+    - bootstrap
+    - packages
+  when: ansible_distribution == "Fedora"
+
+- name: software | python | install passlib
+  ansible.builtin.pip:
+    name: passlib
+    state: present
+    executable: pip3
+  tags:
+    - bootstrap
+    - python
+    - packages
+  when: ansible_distribution == "Fedora"
+
