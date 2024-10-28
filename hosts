@@ -1,0 +1,2 @@
+[workstations]
+sp-dev ansible_connection=local
