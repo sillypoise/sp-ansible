@@ -8,3 +8,6 @@ op_repo:
   gpgcheck: yes
   repo_gpgcheck: yes
   gpgkey: "https://downloads.1password.com/linux/keys/1password.asc"
+
+openssh:
+  sftp_path: /usr/libexec/openssh/sftp-server

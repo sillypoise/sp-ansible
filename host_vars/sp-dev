@@ -1,0 +1,6 @@
+---
+branch: main
+
+ansible_cron_minute: "*/5"
+ssh_port: 22
+ssh_users: "sillypoise flubber"

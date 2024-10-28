@@ -7,3 +7,6 @@
 - import_tasks: software/one_password.yml
 - import_tasks: software/python.yml
 
+
+# Perform remaining tasks
+- import_tasks: system_setup/openssh.yml
