@@ -11,3 +11,4 @@ op_repo:
 
 openssh:
   sftp_path: /usr/libexec/openssh/sftp-server
+  service: sshd

@@ -26,7 +26,7 @@ IgnoreRhosts yes
 # Misc. options
 AcceptEnv LANG LC_*
 TCPKeepAlive yes
-Subsystem sftp {{ sftp_path }}
+Subsystem sftp {{ openssh.sftp_path }}
 
 # Logging
 SyslogFacility AUTH
