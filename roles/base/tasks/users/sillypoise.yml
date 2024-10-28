@@ -59,7 +59,7 @@
     mode: 0600
 
 - name: users | sillypoise | verify op CLI authentication
-  ansible.builtin.command: op whoami
+  ansible.builtin.command: op user get --me
   register: op_whoami
   no_log: true
   tags:
@@ -68,13 +68,46 @@
 
 - name: users | sillypoise | fail if op CLI is not authenticated
   ansible.builtin.fail:
-    msg: "op CLI is not authenticated. Please ensure OP_SESSION_my is set correctly."
+    msg: "op CLI is not authenticated. Please ensure OP_SERVICE_ACCOUNT_TOKEN is set correctly."
   when:
     - ansible_distribution == "Fedora"
     - op_whoami.rc != 0
   tags:
     - secrets
     - op
+
+- block:
+    - name: users | sillypoise | retrieve password from 1Password
+      ansible.builtin.command: op read "op://sp-dev/user/password"
+      register: sillypoise_password
+      no_log: true
+      when: ansible_distribution == "Fedora"
+      tags:
+        - users
+        - sillypoise
+        - secrets
+        - op
+
+    - name: users | sillypoise | set user password
+      ansible.builtin.user:
+        name: sillypoise
+        password: "{{ sillypoise_password.stdout | password_hash('sha512') }}"
+        update_password: always
+      tags:
+        - users
+        - sillypoise
+        - sudo
+      no_log: true
+      when: ansible_distribution == "Fedora"
+  rescue:
+    - name: users | sillypoise | handle password retrieval failure
+      ansible.builtin.fail:
+        msg: "Failed to retrieve password from 1Password. Please check your OP_SERVICE_ACCOUNT_TOKEN environment variable and secret path."
+      tags:
+        - sillypoise
+        - error
+        - secrets
+        - op
 
 - name: users | sillypoise | op inject ansible vault passwd
   ansible.builtin.command: op inject -i /home/sillypoise/.vault_key_passwd.tpl -o /home/sillypoise/.vault_key_passwd
