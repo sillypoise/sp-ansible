@@ -1,0 +1,3 @@
+- name: restart dnf cache
+  command: dnf clean all
+  become: yes
