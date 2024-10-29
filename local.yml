@@ -2,13 +2,13 @@
   tags: always
   become: true
   pre_tasks:
-    - name: pre-run | update package cache (fedora)
+    - name: pre-run | update package cache (arch)
       tags: always
-      ansible.builtin.dnf: 
+      ansible.builtin.pacman:
         update_cache: true
-        state: latest
+        upgrade: yes
       changed_when: False
-      when: ansible_distribution == "Fedora"
+      when: ansible_distribution == "Archlinux"
 
 # run roles
 - hosts: all
