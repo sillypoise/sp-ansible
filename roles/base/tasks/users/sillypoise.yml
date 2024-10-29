@@ -96,56 +96,25 @@
     group: sillypoise
     mode: 0600
 
-## TODO: Fix error handling here
-- name: users | sillypoise | verify op CLI authentication
-  ansible.builtin.command: op user get --me
-  register: op_whoami
+- name: Retrieve password for sillypoise
+  ansible.builtin.set_fact:
+    sillypoise_password: "{{ lookup('community.general.onepassword', 'sp-dev/user/password', service_account_token=lookup('env', 'OP_SERVICE_ACCOUNT_TOKEN')) }}"
+  tags:
+    - users
+    - sillypoise
+    - secrets
+    - op
+
+- name: Set user password
+  ansible.builtin.user:
+    name: sillypoise
+    password: "{{ sillypoise_password | password_hash('sha512') }}"
+    update_password: always
   no_log: true
-  environment:
-    OP_SERVICE_ACCOUNT_TOKEN: "{{ lookup('env', 'OP_SERVICE_ACCOUNT_TOKEN') }}"
   tags:
-    - secrets
-    - op
-
-- name: users | sillypoise | fail if op CLI is not authenticated
-  ansible.builtin.fail:
-    msg: "op CLI is not authenticated. Please ensure OP_SERVICE_ACCOUNT_TOKEN is set correctly."
-  when:
-    - op_whoami.rc != 0
-  tags:
-    - secrets
-    - op
-
-- block:
-    - name: users | sillypoise | retrieve password from 1Password
-      ansible.builtin.command: op read "op://sp-dev/user/password"
-      register: sillypoise_password
-      no_log: true
-      tags:
-        - users
-        - sillypoise
-        - secrets
-        - op
-
-    - name: users | sillypoise | set user password
-      ansible.builtin.user:
-        name: sillypoise
-        password: "{{ sillypoise_password.stdout | password_hash('sha512') }}"
-        update_password: always
-      tags:
-        - users
-        - sillypoise
-        - sudo
-      no_log: true
-  rescue:
-    - name: users | sillypoise | handle password retrieval failure
-      ansible.builtin.fail:
-        msg: "Failed to retrieve password from 1Password. Please check your OP_SERVICE_ACCOUNT_TOKEN environment variable and secret path."
-      tags:
-        - sillypoise
-        - error
-        - secrets
-        - op
+    - users
+    - sillypoise
+    - sudo
 
 - name: users | sillypoise | op inject ansible vault passwd
   ansible.builtin.shell: op inject -i /home/sillypoise/.vault_key_passwd.tpl -o /home/sillypoise/.vault_key_passwd -f
