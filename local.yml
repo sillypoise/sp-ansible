@@ -12,6 +12,10 @@
       changed_when: False
       when: ansible_distribution == "Archlinux"
 
+    - name: Install community.general collection
+      ansible.builtin.command: ansible-galaxy collection install community.general
+      tags: bootstrap
+
 # run roles
 - hosts: all
   tags: base
