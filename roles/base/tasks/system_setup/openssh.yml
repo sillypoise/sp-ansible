@@ -4,11 +4,10 @@
     - ssh
     - system
     - settings
-  ansible.builtin.dnf:
+  ansible.builtin.pacman:
     name: openssh-server
     state: latest
   notify: restart_sshd
-  when: ansible_distribution == "Fedora"
 
 - name: system setup | openssh | enable daemon
   tags:
@@ -20,7 +19,6 @@
     name: sshd
     enabled: yes
     state: started
-  when: ansible_distribution == "Fedora"
 
 - name: system setup | openssh | generate sshd_config file from template
   tags:
@@ -35,7 +33,6 @@
     group: root
     mode: '0644'
   notify: restart_sshd
-  when: ansible_distribution == "Fedora"
 
 - name: system setup | openssh | copy issue.net
   tags:
@@ -49,4 +46,3 @@
     owner: root
     group: root
     mode: '0644'
-  when: ansible_distribution == "Fedora"

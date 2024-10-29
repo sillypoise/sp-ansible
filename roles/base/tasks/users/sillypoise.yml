@@ -17,16 +17,14 @@
   group:
     name: ansible
     state: present
-  when: ansible_distribution == "Fedora"
 
 - name: users | sillypoise | install zsh
   tags:
     - bootstrap
     - packages
-  dnf:
+  ansible.builtin.pacman:
     name: zsh
     state: present
-  when: ansible_distribution == "Fedora"
 
 - name: users | sillypoise | create user without password
   tags:
@@ -44,7 +42,47 @@
     comment: "sillypoise"
     shell: /bin/zsh
     password: '!'  # No password set
-  when: ansible_distribution == "Fedora"
+
+- name: users | sillypoise | create .ssh directory
+  tags:
+    - bootstrap
+    - ssh
+    - users
+    - dotfiles
+    - configure
+  ansible.builtin.file:
+    path: /home/sillypoise/.ssh
+    state: directory
+    owner: sillypoise
+    group: sillypoise
+    mode: '0700'
+
+- name: users | sillypoise | add sudoers file
+  tags:
+    - bootstrap
+    - sudo
+    - users
+    - configure
+  ansible.builtin.copy:
+    src: users/sudoers_sillypoise
+    dest: /etc/sudoers.d/sillypoise
+    owner: root
+    group: root
+    mode: '0440'
+
+- name: users | sillypoise | add public key
+  tags:
+    - bootstrap
+    - dotfiles
+    - sillypoise
+    - ssh
+    - ssh-keys
+    - users
+  authorized_key:
+    user: sillypoise
+    key: "{{ item }}"
+  with_file:
+    - users/sillypoise/ssh/sp_work_ed25519.pub
 
 - name: users | sillypoise | import ansible password op tpl file
   tags:
@@ -71,7 +109,6 @@
   ansible.builtin.fail:
     msg: "op CLI is not authenticated. Please ensure OP_SERVICE_ACCOUNT_TOKEN is set correctly."
   when:
-    - ansible_distribution == "Fedora"
     - op_whoami.rc != 0
   tags:
     - secrets
@@ -82,7 +119,6 @@
       ansible.builtin.command: op read "op://sp-dev/user/password"
       register: sillypoise_password
       no_log: true
-      when: ansible_distribution == "Fedora"
       tags:
         - users
         - sillypoise
@@ -99,7 +135,6 @@
         - sillypoise
         - sudo
       no_log: true
-      when: ansible_distribution == "Fedora"
   rescue:
     - name: users | sillypoise | handle password retrieval failure
       ansible.builtin.fail:
@@ -126,7 +161,6 @@
     mode: 0600
   when:
     - inject_result.rc == 0
-    - ansible_distribution == "Fedora"
   tags:
     - secrets
     - op
@@ -141,47 +175,6 @@
     - cleanup
   when:
     - inject_result.rc == 0
-    - ansible_distribution == "Fedora"
-
-- name: users | sillypoise | create .ssh directory
-  tags:
-    - ssh
-    - users
-    - dotfiles
-    - configure
-  ansible.builtin.file:
-    path: /home/sillypoise/.ssh
-    state: directory
-    owner: sillypoise
-    group: sillypoise
-    mode: '0700'
-  when: ansible_distribution == "Fedora"
-
-- name: users | sillypoise | add sudoers file
-  tags:
-    - sudo
-    - users
-    - configure
-  ansible.builtin.copy:
-    src: users/sudoers_sillypoise
-    dest: /etc/sudoers.d/sillypoise
-    owner: root
-    group: root
-    mode: '0440'
-  when: ansible_distribution == "Fedora"
-
-- name: users | sillypoise | add public key
-  tags:
-    - dotfiles
-    - sillypoise
-    - ssh
-    - ssh-keys
-    - users
-  authorized_key:
-    user: sillypoise
-    key: "{{ item }}"
-  with_file:
-    - users/sillypoise/ssh/sp_work_ed25519.pub
 
 - name: users | sillypoise | create config directories
   tags:
