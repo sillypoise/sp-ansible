@@ -110,7 +110,6 @@
     name: sillypoise
     password: "{{ sillypoise_password | password_hash('sha512') }}"
     update_password: always
-  no_log: true
   tags:
     - users
     - sillypoise
