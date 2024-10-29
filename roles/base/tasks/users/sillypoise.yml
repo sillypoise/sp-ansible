@@ -98,7 +98,7 @@
 
 - name: Retrieve password for sillypoise
   ansible.builtin.set_fact:
-    sillypoise_password: "{{ lookup('community.general.onepassword', 'user/password', service_account_token=lookup('env', 'OP_SERVICE_ACCOUNT_TOKEN'), vault='sp-dev') }}"
+    sillypoise_password: "{{ lookup('community.general.onepassword', 'user', service_account_token=lookup('env', 'OP_SERVICE_ACCOUNT_TOKEN'), vault='sp-dev') }}"
   tags:
     - users
     - sillypoise
