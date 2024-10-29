@@ -28,6 +28,8 @@
     - home-manager
 
 - name: software | nix | install home-manager
+  become: true
+  become_user: sillypoise
   shell: nix-shell '<home-manager>' -A install
   tags:
     - nix
