@@ -14,7 +14,7 @@
       - openssl
       - bzip2
       - libffi
-  state: present
+    state: present
   tags:
     - python
     - bootstrap
