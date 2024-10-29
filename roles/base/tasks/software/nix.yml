@@ -1,4 +1,6 @@
 - name: system setup | nix | install nix in single-user mode
+  become: true
+  become_user: sillypoise
   shell: |
     sh <(curl -L https://nixos.org/nix/install) --no-daemon
   args:
