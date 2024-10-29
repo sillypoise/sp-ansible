@@ -1,6 +1,4 @@
 - name: system setup | nix | install nix in single-user mode
-  become: true
-  become_user: sillypoise
   shell: |
     sh <(curl -L https://nixos.org/nix/install) --no-daemon
   args:
@@ -20,8 +18,6 @@
 
 - name: software | nix | add home-manager channel
   shell: nix-channel --add https://github.com/nix-community/home-manager/archive/release-23.05.tar.gz home-manager
-  become: true
-  become_user: sillypoise
   tags:
     - nix
     - home-manager
@@ -29,8 +25,6 @@
 
 - name: software | nix | update nix channels
   shell: nix-channel --update
-  become: true
-  become_user: sillypoise
   tags:
     - nix
     - home-manager
@@ -67,8 +61,6 @@
     - packages
 
 - name: software | nix | install packages via home-manager
-  become: true
-  become_user: sillypoise
   shell: sudo -i -u sillypoise home-manager switch -f /home/sillypoise/.config/nixpkgs/home.nix
   tags:
     - nix
