@@ -98,7 +98,7 @@
 
 ## TODO: Fix error handling here
 - name: users | sillypoise | verify op CLI authentication
-  ansible.builtin.command: op whoami
+  ansible.builtin.command: op user get --me
   register: op_whoami
   no_log: true
   environment:
