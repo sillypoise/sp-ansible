@@ -96,17 +96,11 @@
     group: sillypoise
     mode: 0600
 
-- name: Check if OP_SERVICE_ACCOUNT_TOKEN is available
-  debug:
-    msg: "{{ lookup('env', 'OP_SERVICE_ACCOUNT_TOKEN') }}"
-
 ## TODO: Fix error handling here
 - name: users | sillypoise | verify op CLI authentication
-  ansible.builtin.command: op user get --me
+  ansible.builtin.command: op whoami
   register: op_whoami
   no_log: true
-  environment:
-    OP_SERVICE_ACCOUNT_TOKEN: "{{ lookup('env', 'OP_SERVICE_ACCOUNT_TOKEN') }}"
   tags:
     - secrets
     - op
