@@ -11,6 +11,8 @@
 - name: software | nix | add home-manager channel
   # Ansible’s shell environment does not recognize nix-channel, even though it works interactively. This happens because the Nix environment isn't loaded automatically for non-login shells (like those Ansible uses)
   shell: ". /home/sillypoise/.nix-profile/etc/profile.d/nix.sh && nix-channel --add https://github.com/nix-community/home-manager/archive/release-23.05.tar.gz home-manager"
+  become: true
+  become_user: sillypoise
   tags:
     - nix
     - home-manager
@@ -19,6 +21,8 @@
 - name: software | nix | update nix channels
   # Ansible’s shell environment does not recognize nix-channel, even though it works interactively. This happens because the Nix environment isn't loaded automatically for non-login shells (like those Ansible uses)
   shell: ". /home/sillypoise/.nix-profile/etc/profile.d/nix.sh && nix-channel --update"
+  become: true
+  become_user: sillypoise
   tags:
     - nix
     - home-manager
