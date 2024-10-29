@@ -12,6 +12,14 @@
       changed_when: False
       when: ansible_distribution == "Archlinux"
 
+    - name: Install passlib system-wide
+      ansible.builtin.pacman:
+        name: python-passlib
+        state: present
+      tags:
+        - python
+        - bootstrap
+
     - name: Install community.general collection
       ansible.builtin.command: ansible-galaxy collection install community.general
       tags: bootstrap
