@@ -7,6 +7,14 @@
     - bootstrap
     - packages
 
+- name: Install passlib system-wide
+  ansible.builtin.pacman:
+    name: python-passlib
+    state: present
+    tags:
+      - python
+      - bootstrap
+
 # - name: software | python | install development tools for pip
 #   ansible.builtin.pacman:
 #     name:
