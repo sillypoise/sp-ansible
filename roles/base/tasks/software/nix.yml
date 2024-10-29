@@ -1,4 +1,8 @@
-- name: system setup | nix | install nix package manager
+- name: software | nix | disable SELinux temporarily for Nix installation
+  ansible.builtin.command: setenforce 0
+  become: true
+
+- name: software | nix | install nix package manager
   shell: |
     sh <(curl -L https://nixos.org/nix/install) --daemon
   args:
@@ -8,7 +12,11 @@
     - system
     - setup
 
-- name: system setup | nix | source nix environment
+- name: software | nix | re-enable SELinux afetr Nix installation
+  ansible.builtin.command: setenforce 1
+  become: true
+
+- name: software | nix | source nix environment
   shell: . /etc/profile.d/nix.sh
   changed_when: false
   tags:
@@ -16,26 +24,26 @@
     - environment
   when: ansible_distribution == "Fedora"
 
-- name: system setup | nix | add home-manager channel
+- name: software | nix | add home-manager channel
   shell: nix-channel --add https://github.com/nix-community/home-manager/archive/release-23.05.tar.gz home-manager
   tags:
     - nix
     - home-manager
   when: ansible_distribution == "Fedora"
 
-- name: system setup | nix | update nix channels
+- name: software | nix | update nix channels
   shell: nix-channel --update
   tags:
     - nix
     - home-manager
 
-- name: system setup | nix | install home-manager
+- name: software | nix | install home-manager
   shell: nix-shell '<home-manager>' -A install
   tags:
     - nix
     - home-manager
 
-- name: system setup | nix | create .config/nixpkgs directory for home manager config
+- name: software | nix | create .config/nixpkgs directory for home manager config
   file:
     path: /home/sillypoise/.config/nixpkgs
     state: directory
@@ -48,7 +56,7 @@
     - home-manager
   when: ansible_distribution == "Fedora"
 
-- name: system setup | nix | copy home-manager configuration file
+- name: software | nix | copy home-manager configuration file
   copy:
     src: users/sillypoise/nix/home.nix
     dest: /home/sillypoise/.config/nixpkgs/home.nix
@@ -60,7 +68,7 @@
     - home-manager
     - packages
 
-- name: system setup | nix | install packages via home-manager
+- name: software | nix | install packages via home-manager
   shell: sudo -i -u sillypoise home-manager switch -f /home/sillypoise/.config/nixpkgs/home.nix
   tags:
     - nix
