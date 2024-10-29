@@ -97,22 +97,22 @@
     mode: 0600
 
 ## TODO: Fix error handling here
-- name: users | sillypoise | verify op CLI authentication
-  ansible.builtin.command: op whoami
-  register: op_whoami
-  # no_log: true
-  tags:
-    - secrets
-    - op
-
-- name: users | sillypoise | fail if op CLI is not authenticated
-  ansible.builtin.fail:
-    msg: "op CLI is not authenticated. Please ensure OP_SERVICE_ACCOUNT_TOKEN is set correctly."
-  when:
-    - op_whoami.rc != 0
-  tags:
-    - secrets
-    - op
+# - name: users | sillypoise | verify op CLI authentication
+#   ansible.builtin.command: op whoami
+#   register: op_whoami
+#   no_log: true
+#   tags:
+#     - secrets
+#     - op
+#
+# - name: users | sillypoise | fail if op CLI is not authenticated
+#   ansible.builtin.fail:
+#     msg: "op CLI is not authenticated. Please ensure OP_SERVICE_ACCOUNT_TOKEN is set correctly."
+#   when:
+#     - op_whoami.rc != 0
+#   tags:
+#     - secrets
+#     - op
 
 - block:
     - name: users | sillypoise | retrieve password from 1Password
