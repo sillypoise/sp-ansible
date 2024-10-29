@@ -1,4 +1,6 @@
 - hosts: all
+  environment:
+    OP_SERVICE_ACCOUNT_TOKEN: "{{ lookup('env', 'OP_SERVICE_ACCOUNT_TOKEN') }}"
   tags: always
   become: true
   pre_tasks:
