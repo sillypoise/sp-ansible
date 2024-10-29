@@ -13,6 +13,11 @@ if [ -f "$HOME/.config/broot/launcher/bash/br" ]; then
     source "$HOME/.config/broot/launcher/bash/br"
 fi
 
+# Add Nix to PATH
+if [ -e "$HOME/.nix-profile/etc/profile.d/nix.sh" ]; then
+    . "$HOME/.nix-profile/etc/profile.d/nix.sh"
+fi
+
 # Volta setup
 if [ -d "$HOME/.volta" ]; then
     export VOLTA_HOME="$HOME/.volta"

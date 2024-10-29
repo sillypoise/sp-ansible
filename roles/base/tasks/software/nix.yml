@@ -1,20 +1,12 @@
-- name: software | nix | disable SELinux temporarily for Nix installation
-  ansible.builtin.command: setenforce 0
-  become: true
-
-- name: software | nix | install nix package manager
+- name: system setup | nix | install nix in single-user mode
   shell: |
-    sh <(curl -L https://nixos.org/nix/install) --daemon
+    sh <(curl -L https://nixos.org/nix/install) --no-daemon
   args:
-    creates: /nix/var/nix/profiles/default
+    creates: /home/sillypoise/.nix-profile
   tags:
     - nix
     - system
     - setup
-
-- name: software | nix | re-enable SELinux afetr Nix installation
-  ansible.builtin.command: setenforce 1
-  become: true
 
 - name: software | nix | source nix environment
   shell: . /etc/profile.d/nix.sh
