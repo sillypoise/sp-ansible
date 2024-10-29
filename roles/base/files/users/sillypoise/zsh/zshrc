@@ -7,3 +7,4 @@ source ~/.zsh/history.zsh
 source ~/.zsh/path.zsh
 source ~/.zsh/setopt.zsh
 source ~/.zsh/theming.zsh
+source ~/.zsh/tooling.zsh
