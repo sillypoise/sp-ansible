@@ -101,6 +101,8 @@
   ansible.builtin.command: op user get --me
   register: op_whoami
   no_log: true
+  environment:
+    OP_SERVICE_ACCOUNT_TOKEN: "{{ lookup('env', 'OP_SERVICE_ACCOUNT_TOKEN') }}"
   tags:
     - secrets
     - op
