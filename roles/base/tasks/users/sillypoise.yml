@@ -115,11 +115,10 @@
 #     - users
 #     - sillypoise
 #     - sudo
-#
+
 - name: users | sillypoise | op inject ansible vault passwd
   ansible.builtin.shell: op inject -i /home/sillypoise/.vault_key_passwd.tpl -o /home/sillypoise/.vault_key_passwd -f
   register: inject_result
-  debug: true
   no_log: true
   tags:
     - secrets
