@@ -21,6 +21,5 @@
 - hosts: all
   tags: base
   become: true
-  ansible_python_interpreter: /opt/venv/bin/python
   roles:
     - base
