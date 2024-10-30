@@ -26,7 +26,7 @@
     name: zsh
     state: present
 
-- name: users | sillypoise | create user without password
+- name: users | sillypoise | create user
   tags:
     - bootstrap
     - sillypoise
@@ -57,18 +57,18 @@
     group: sillypoise
     mode: '0700'
 
-- name: users | sillypoise | add sudoers file
-  tags:
-    - bootstrap
-    - sudo
-    - users
-    - configure
-  ansible.builtin.copy:
-    src: users/sudoers_sillypoise
-    dest: /etc/sudoers.d/sillypoise
-    owner: root
-    group: root
-    mode: '0440'
+# - name: users | sillypoise | add sudoers file
+#   tags:
+#     - bootstrap
+#     - sudo
+#     - users
+#     - configure
+#   ansible.builtin.copy:
+#     src: users/sudoers_sillypoise
+#     dest: /etc/sudoers.d/sillypoise
+#     owner: root
+#     group: root
+#     mode: '0440'
 
 - name: users | sillypoise | add public key
   tags:
@@ -97,22 +97,6 @@
     group: sillypoise
     mode: 0600
 
-- name: Debug OP_SERVICE_ACCOUNT_TOKEN
-  ansible.builtin.debug:
-    msg: "OP_SERVICE_ACCOUNT_TOKEN is set to {{ lookup('env', 'OP_SERVICE_ACCOUNT_TOKEN') }}"
-  tags:
-    - debug
-
-- name: users | sillypoise | verify op CLI authentication
-  ansible.builtin.command: op user get --me
-  register: op_whoami
-  environment:
-    OP_SERVICE_ACCOUNT_TOKEN: "{{ lookup('env', 'OP_SERVICE_ACCOUNT_TOKEN') }}"
-  no_log: true
-  tags:
-    - secrets
-    - op
-
 # - name: Retrieve password for sillypoise
 #   ansible.builtin.set_fact:
 #     sillypoise_password: "{{ lookup('community.general.onepassword', 'user', service_account_token=lookup('env', 'OP_SERVICE_ACCOUNT_TOKEN'), vault='sp-dev') }}"
@@ -132,13 +116,13 @@
 #     - sillypoise
 #     - sudo
 
-- name: users | sillypoise | op inject ansible vault passwd
-  ansible.builtin.shell: op inject -i /home/sillypoise/.vault_key_passwd.tpl -o /home/sillypoise/.vault_key_passwd -f
-  register: inject_result
-  no_log: true
-  tags:
-    - secrets
-    - op
+# - name: users | sillypoise | op inject ansible vault passwd
+#   ansible.builtin.shell: op inject -i /home/sillypoise/.vault_key_passwd.tpl -o /home/sillypoise/.vault_key_passwd -f
+#   register: inject_result
+#   no_log: true
+#   tags:
+#     - secrets
+#     - op
 
 # - name: users | sillypoise | set permissions on injected vault_key_passwd
 #   ansible.builtin.file:
@@ -163,59 +147,59 @@
 #   when:
 #     - inject_result.rc == 0
 
-- name: users | sillypoise | create config directories
-  tags:
-    - dotfiles
-    - sillypoise
-    - users
-    - neovim
-    - zsh
-  file:
-    path: /home/sillypoise/{{ item.dir }}
-    state: directory
-    owner: sillypoise
-    group: sillypoise
-    mode: 0700
-  with_items:
-    - { dir: '.config' }
-    - { dir: '.zsh' }
-
-- name: users | sillypoise | copy dotfiles
-  tags:
-    - dotfiles
-    - users
-    - sillypoise
-    - zsh
-  copy:
-    src: users/sillypoise/{{ item.src }}
-    dest: /home/sillypoise/{{ item.dest }}
-    owner: sillypoise
-    group: sillypoise
-    mode: '0600'
-  with_items:
-    - { src: 'git/gitconfig', dest: '.gitconfig' }
-    - { src: 'zsh/zshrc', dest: '.zshrc' }
-
-- name: users | sillypoise | copy individual zsh config files
-  tags:
-    - dotfiles
-    - sillypoise
-    - users
-    - zsh
-  copy:
-    src: users/sillypoise/zsh/{{ item.src }}
-    dest: /home/sillypoise/.zsh/{{ item.src }}
-    owner: sillypoise
-    group: sillypoise
-    mode: '0600'
-  with_items:
-    - { src: 'aliases.zsh' }
-    - { src: 'bindkey.zsh' }
-    - { src: 'completion.zsh' }
-    - { src: 'exports.zsh' }
-    - { src: 'functions.zsh' }
-    - { src: 'history.zsh' }
-    - { src: 'path.zsh' }
-    - { src: 'setopt.zsh' }
-    - { src: 'theming.zsh' }
-    - { src: 'tooling.zsh' }
+# - name: users | sillypoise | create config directories
+#   tags:
+#     - dotfiles
+#     - sillypoise
+#     - users
+#     - neovim
+#     - zsh
+#   file:
+#     path: /home/sillypoise/{{ item.dir }}
+#     state: directory
+#     owner: sillypoise
+#     group: sillypoise
+#     mode: 0700
+#   with_items:
+#     - { dir: '.config' }
+#     - { dir: '.zsh' }
+#
+# - name: users | sillypoise | copy dotfiles
+#   tags:
+#     - dotfiles
+#     - users
+#     - sillypoise
+#     - zsh
+#   copy:
+#     src: users/sillypoise/{{ item.src }}
+#     dest: /home/sillypoise/{{ item.dest }}
+#     owner: sillypoise
+#     group: sillypoise
+#     mode: '0600'
+#   with_items:
+#     - { src: 'git/gitconfig', dest: '.gitconfig' }
+#     - { src: 'zsh/zshrc', dest: '.zshrc' }
+#
+# - name: users | sillypoise | copy individual zsh config files
+#   tags:
+#     - dotfiles
+#     - sillypoise
+#     - users
+#     - zsh
+#   copy:
+#     src: users/sillypoise/zsh/{{ item.src }}
+#     dest: /home/sillypoise/.zsh/{{ item.src }}
+#     owner: sillypoise
+#     group: sillypoise
+#     mode: '0600'
+#   with_items:
+#     - { src: 'aliases.zsh' }
+#     - { src: 'bindkey.zsh' }
+#     - { src: 'completion.zsh' }
+#     - { src: 'exports.zsh' }
+#     - { src: 'functions.zsh' }
+#     - { src: 'history.zsh' }
+#     - { src: 'path.zsh' }
+#     - { src: 'setopt.zsh' }
+#     - { src: 'theming.zsh' }
+#     - { src: 'tooling.zsh' }
