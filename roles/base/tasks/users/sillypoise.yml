@@ -106,7 +106,6 @@
     - op
 
 - name: Set user password
-  ansible_python_interpreter: /opt/venv/bin/python
   ansible.builtin.user:
     name: sillypoise
     password: "{{ sillypoise_password | password_hash('sha512') }}"
