@@ -57,18 +57,18 @@
     group: sillypoise
     mode: '0700'
 
-- name: users | sillypoise | add sudoers file
-  tags:
-    - bootstrap
-    - sudo
-    - users
-    - configure
-  ansible.builtin.copy:
-    src: users/sudoers_sillypoise
-    dest: /etc/sudoers.d/sillypoise
-    owner: root
-    group: root
-    mode: '0440'
+# - name: users | sillypoise | add sudoers file
+#   tags:
+#     - bootstrap
+#     - sudo
+#     - users
+#     - configure
+#   ansible.builtin.copy:
+#     src: users/sudoers_sillypoise
+#     dest: /etc/sudoers.d/sillypoise
+#     owner: root
+#     group: root
+#     mode: '0440'
 
 - name: users | sillypoise | add public key
   tags:
