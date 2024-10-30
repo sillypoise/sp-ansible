@@ -97,6 +97,16 @@
     group: sillypoise
     mode: 0600
 
+- name: users | sillypoise | verify op CLI authentication
+  ansible.builtin.command: op user get --me
+  register: op_whoami
+  environment:
+    OP_SERVICE_ACCOUNT_TOKEN: "{{ lookup('env', 'OP_SERVICE_ACCOUNT_TOKEN') }}"
+  no_log: true
+  tags:
+    - secrets
+    - op
+
 # - name: Retrieve password for sillypoise
 #   ansible.builtin.set_fact:
 #     sillypoise_password: "{{ lookup('community.general.onepassword', 'user', service_account_token=lookup('env', 'OP_SERVICE_ACCOUNT_TOKEN'), vault='sp-dev') }}"
@@ -116,13 +126,13 @@
 #     - sillypoise
 #     - sudo
 
-- name: users | sillypoise | op inject ansible vault passwd
-  ansible.builtin.shell: op inject -i /home/sillypoise/.vault_key_passwd.tpl -o /home/sillypoise/.vault_key_passwd -f
-  register: inject_result
-  no_log: true
-  tags:
-    - secrets
-    - op
+# - name: users | sillypoise | op inject ansible vault passwd
+#   ansible.builtin.shell: op inject -i /home/sillypoise/.vault_key_passwd.tpl -o /home/sillypoise/.vault_key_passwd -f
+#   register: inject_result
+#   no_log: true
+#   tags:
+#     - secrets
+#     - op
 
 # - name: users | sillypoise | set permissions on injected vault_key_passwd
 #   ansible.builtin.file:
