@@ -97,11 +97,11 @@
     group: sillypoise
     mode: 0600
 
-# - name: Debug OP_SERVICE_ACCOUNT_TOKEN
-#   ansible.builtin.debug:
-#     msg: "OP_SERVICE_ACCOUNT_TOKEN is set to {{ lookup('env', 'OP_SERVICE_ACCOUNT_TOKEN') }}"
-#   tags:
-#     - debug
+- name: Debug OP_SERVICE_ACCOUNT_TOKEN
+  ansible.builtin.debug:
+    msg: "OP_SERVICE_ACCOUNT_TOKEN is set to {{ lookup('env', 'OP_SERVICE_ACCOUNT_TOKEN') }}"
+  tags:
+    - debug
 
 - name: users | sillypoise | verify op CLI authentication
   ansible.builtin.command: op user get --me
