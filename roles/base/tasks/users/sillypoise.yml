@@ -83,6 +83,7 @@
     key: "{{ item }}"
   with_file:
     - users/sillypoise/ssh/sp_work_ed25519.pub
+  notify: restart_sshd
 
 - name: users | sillypoise | import ansible password op tpl file
   tags:
