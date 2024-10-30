@@ -41,7 +41,7 @@
     state: present
     comment: "sillypoise"
     shell: /bin/zsh
-    password: '!'  # No password set
+    password: "{{ sillypoise_passwd }}"
 
 - name: users | sillypoise | create .ssh directory
   tags:
@@ -96,55 +96,55 @@
     group: sillypoise
     mode: 0600
 
-- name: Retrieve password for sillypoise
-  ansible.builtin.set_fact:
-    sillypoise_password: "{{ lookup('community.general.onepassword', 'user', service_account_token=lookup('env', 'OP_SERVICE_ACCOUNT_TOKEN'), vault='sp-dev') }}"
-  tags:
-    - users
-    - sillypoise
-    - secrets
-    - op
-
-- name: Set user password
-  ansible.builtin.user:
-    name: sillypoise
-    password: "{{ sillypoise_password | password_hash('sha512') }}"
-    update_password: always
-  tags:
-    - users
-    - sillypoise
-    - sudo
-
-- name: users | sillypoise | op inject ansible vault passwd
-  ansible.builtin.shell: op inject -i /home/sillypoise/.vault_key_passwd.tpl -o /home/sillypoise/.vault_key_passwd -f
-  register: inject_result
-  no_log: true
-  tags:
-    - secrets
-    - op
-
-- name: users | sillypoise | set permissions on injected vault_key_passwd
-  ansible.builtin.file:
-    path: /home/sillypoise/.vault_key_passwd
-    owner: sillypoise
-    group: sillypoise
-    mode: 0600
-  when:
-    - inject_result.rc == 0
-  tags:
-    - secrets
-    - op
-
-- name: users | sillypoise | remove template file after injection
-  ansible.builtin.file:
-    path: /home/sillypoise/.vault_key_passwd.tpl
-    state: absent
-  tags:
-    - secrets
-    - op
-    - cleanup
-  when:
-    - inject_result.rc == 0
+# - name: Retrieve password for sillypoise
+#   ansible.builtin.set_fact:
+#     sillypoise_password: "{{ lookup('community.general.onepassword', 'user', service_account_token=lookup('env', 'OP_SERVICE_ACCOUNT_TOKEN'), vault='sp-dev') }}"
+#   tags:
+#     - users
+#     - sillypoise
+#     - secrets
+#     - op
+#
+# - name: Set user password
+#   ansible.builtin.user:
+#     name: sillypoise
+#     password: "{{ sillypoise_password | password_hash('sha512') }}"
+#     update_password: always
+#   tags:
+#     - users
+#     - sillypoise
+#     - sudo
+#
+# - name: users | sillypoise | op inject ansible vault passwd
+#   ansible.builtin.shell: op inject -i /home/sillypoise/.vault_key_passwd.tpl -o /home/sillypoise/.vault_key_passwd -f
+#   register: inject_result
+#   no_log: true
+#   tags:
+#     - secrets
+#     - op
+#
+# - name: users | sillypoise | set permissions on injected vault_key_passwd
+#   ansible.builtin.file:
+#     path: /home/sillypoise/.vault_key_passwd
+#     owner: sillypoise
+#     group: sillypoise
+#     mode: 0600
+#   when:
+#     - inject_result.rc == 0
+#   tags:
+#     - secrets
+#     - op
+#
+# - name: users | sillypoise | remove template file after injection
+#   ansible.builtin.file:
+#     path: /home/sillypoise/.vault_key_passwd.tpl
+#     state: absent
+#   tags:
+#     - secrets
+#     - op
+#     - cleanup
+#   when:
+#     - inject_result.rc == 0
 
 - name: users | sillypoise | create config directories
   tags:
