@@ -105,7 +105,7 @@
 #     - sillypoise
 #     - secrets
 #     - op
-#
+
 # - name: Set user password
 #   ansible.builtin.user:
 #     name: sillypoise
@@ -116,14 +116,15 @@
 #     - sillypoise
 #     - sudo
 #
-# - name: users | sillypoise | op inject ansible vault passwd
-#   ansible.builtin.shell: op inject -i /home/sillypoise/.vault_key_passwd.tpl -o /home/sillypoise/.vault_key_passwd -f
-#   register: inject_result
-#   no_log: true
-#   tags:
-#     - secrets
-#     - op
-#
+- name: users | sillypoise | op inject ansible vault passwd
+  ansible.builtin.shell: op inject -i /home/sillypoise/.vault_key_passwd.tpl -o /home/sillypoise/.vault_key_passwd -f
+  register: inject_result
+  debug: true
+  no_log: true
+  tags:
+    - secrets
+    - op
+
 # - name: users | sillypoise | set permissions on injected vault_key_passwd
 #   ansible.builtin.file:
 #     path: /home/sillypoise/.vault_key_passwd
